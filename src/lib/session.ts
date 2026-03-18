@@ -12,6 +12,20 @@ function getSecret() {
   return process.env.AUTH_SECRET || "local-development-secret";
 }
 
+export function shouldUseSecureCookie() {
+  const explicit = process.env.AUTH_COOKIE_SECURE?.trim().toLowerCase();
+
+  if (explicit === "true") {
+    return true;
+  }
+
+  if (explicit === "false") {
+    return false;
+  }
+
+  return process.env.NODE_ENV === "production";
+}
+
 function encode(input: string) {
   return Buffer.from(input).toString("base64url");
 }
@@ -62,4 +76,3 @@ export async function isAdminLoggedIn() {
   const cookieStore = await cookies();
   return verifyAuthToken(cookieStore.get(AUTH_COOKIE)?.value);
 }
-

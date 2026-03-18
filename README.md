@@ -115,6 +115,7 @@ docker compose exec web npm run db:clear-content
 
 - Upload media akan disimpan ke `public/uploads`
 - Base URL untuk generator link WhatsApp memakai `NEXT_PUBLIC_BASE_URL` saat diperlukan
+- Untuk login admin di domain/VPS, cookie auth bisa dikontrol lewat `AUTH_COOKIE_SECURE`
 - Jika nanti ingin pindah ke PostgreSQL, cukup ganti datasource Prisma dan migrasi data
 - Versi Node yang direkomendasikan ada di `.nvmrc`
 
@@ -129,6 +130,50 @@ docker compose exec web npm run db:clear-content
 - runtime `next start --hostname 0.0.0.0`
 
 Untuk local production-like run, `docker compose up --build -d` aman dipakai karena tidak lagi melakukan `npm install`, `seed`, dan `build` ulang di setiap restart container.
+
+## Nginx Reverse Proxy
+
+Contoh konfigurasi Nginx ada di `deploy/nginx/lamaran.conf`.
+
+Poin penting:
+
+- arahkan domain Hostinger ke IP publik VPS
+- buka port `80` dan `443` di Fortinet ke VPS/Nginx
+- jalankan aplikasi Next.js di `127.0.0.1:3000`
+- biarkan Nginx yang terminate HTTPS lalu proxy ke Next.js
+- set `NEXT_PUBLIC_BASE_URL` ke domain HTTPS final Anda
+
+Jika Anda sedang testing admin login lewat HTTP biasa di VPS, set:
+
+```bash
+AUTH_COOKIE_SECURE="false"
+```
+
+Jika domain sudah berjalan lewat HTTPS penuh di Nginx, gunakan:
+
+```bash
+AUTH_COOKIE_SECURE="true"
+```
+
+Atau biarkan default:
+
+```bash
+AUTH_COOKIE_SECURE="auto"
+```
+
+`auto` akan mengikuti `NODE_ENV`, jadi pada production cookie akan `Secure`.
+
+## Troubleshooting Admin Login
+
+Jika login admin `200 OK` tetapi tetap kembali ke `/admin/login`, biasanya penyebabnya bukan database. Penyebab paling umum adalah cookie session tidak tersimpan di browser.
+
+Checklist:
+
+1. Pastikan response `POST /api/auth/login` mengirim `Set-Cookie`
+2. Pastikan browser benar-benar menyimpan cookie `lamaran_admin_session`
+3. Jika akses masih HTTP biasa di domain VPS, coba `AUTH_COOKIE_SECURE="false"`
+4. Jika akses sudah HTTPS via Nginx, gunakan `AUTH_COOKIE_SECURE="true"` atau `auto`
+5. Pastikan Nginx meneruskan header `Host` dan `X-Forwarded-Proto`
 
 ## Kubernetes
 
