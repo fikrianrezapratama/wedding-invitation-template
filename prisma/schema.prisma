@@ -1,0 +1,111 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum AttendanceStatus {
+  HADIR
+  TIDAK_HADIR
+}
+
+model Guest {
+  id        String   @id @default(cuid())
+  name      String
+  phone     String
+  slug      String   @unique
+  note      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  rsvps     RSVP[]
+}
+
+model InvitationSettings {
+  id               Int       @id
+  brideName        String
+  groomName        String
+  eventTitle       String
+  eventDate        DateTime
+  eventTimeLabel   String
+  venueName        String
+  venueAddress     String
+  googleMapsUrl    String
+  mapEmbedUrl      String?
+  heroHeadline     String
+  introMessage     String
+  quoteText        String
+  storyTitle       String
+  storyText        String
+  countdownTitle   String
+  rsvpTitle        String
+  guestbookTitle   String
+  primaryColor     String
+  secondaryColor   String
+  accentColor      String
+  backgroundColor  String
+  surfaceColor     String
+  themePreset      String    @default("cinnamon-rose")
+  fontKey          String
+  layoutStyle      String
+  showHero         Boolean   @default(true)
+  showEventDetails Boolean   @default(true)
+  showLocation     Boolean   @default(true)
+  showGallery      Boolean   @default(true)
+  showStory        Boolean   @default(true)
+  showCountdown    Boolean   @default(true)
+  showRsvp         Boolean   @default(true)
+  showGuestbook    Boolean   @default(true)
+  showMusic        Boolean   @default(false)
+  showBackgroundImage Boolean @default(true)
+  showHeroPhoto    Boolean   @default(true)
+  showEnvelopePhoto Boolean  @default(true)
+  musicUrl         String?
+  musicTitle       String?
+  musicStartSeconds Int      @default(0)
+  whatsappMessageTemplate String @default("Halo {name}, kami mengundang Anda ke acara lamaran kami.\n\nSilakan buka undangan berikut:\n{link}\n\nTerima kasih.")
+  coverImageUrl    String?
+  coverImageFocusX Int       @default(50)
+  coverImageFocusY Int       @default(50)
+  backgroundImageUrl String?
+  backgroundImageFocusX Int  @default(50)
+  backgroundImageFocusY Int  @default(50)
+  envelopeImageUrl String?
+  envelopeImageFocusX Int    @default(50)
+  envelopeImageFocusY Int    @default(50)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  galleryItems     GalleryItem[]
+}
+
+model GalleryItem {
+  id         String             @id @default(cuid())
+  settingsId Int                @default(1)
+  imageUrl   String
+  caption    String?
+  sortOrder  Int                @default(0)
+  createdAt  DateTime           @default(now())
+  settings   InvitationSettings @relation(fields: [settingsId], references: [id], onDelete: Cascade)
+}
+
+model RSVP {
+  id             String           @id @default(cuid())
+  guestId        String?
+  invitationSlug String?
+  name           String
+  attendance     AttendanceStatus
+  guestCount     Int              @default(1)
+  message        String?
+  createdAt      DateTime         @default(now())
+  guest          Guest?           @relation(fields: [guestId], references: [id], onDelete: SetNull)
+}
+
+model GuestbookEntry {
+  id             String   @id @default(cuid())
+  name           String
+  message        String
+  invitationSlug String?
+  createdAt      DateTime @default(now())
+}

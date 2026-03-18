@@ -1,0 +1,195 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --app-primary: #6f4e37;
+  --app-secondary: #e9d8c5;
+  --app-accent: #b66a50;
+  --app-background: #f7f1e8;
+  --app-surface: #fff8f0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.font-cormorant {
+  font-family: var(--font-cormorant), serif;
+}
+
+.font-playfair {
+  font-family: var(--font-playfair), serif;
+}
+
+.font-jakarta {
+  font-family: var(--font-jakarta), sans-serif;
+}
+
+.font-manrope {
+  font-family: var(--font-manrope), sans-serif;
+}
+
+.app-shell {
+  background:
+    radial-gradient(circle at top left, color-mix(in srgb, #ffffff 85%, var(--app-secondary) 15%), transparent 35%),
+    radial-gradient(circle at bottom right, color-mix(in srgb, var(--app-primary) 14%, transparent), transparent 30%),
+    linear-gradient(180deg, var(--app-background), color-mix(in srgb, var(--app-background) 78%, #ffffff 22%));
+}
+
+.section-card {
+  @apply rounded-[2rem] shadow-glow backdrop-blur;
+  border: 1px solid color-mix(in srgb, var(--app-secondary) 44%, white 56%);
+  background: color-mix(in srgb, var(--app-surface) 82%, white 18%);
+}
+
+.admin-card {
+  @apply rounded-[1.75rem] border border-stone-200 bg-white p-5 shadow-sm;
+}
+
+.field-label {
+  @apply mb-2 block text-sm font-semibold uppercase tracking-[0.2em] text-stone-500;
+}
+
+.field-input {
+  @apply w-full rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-900 outline-none transition focus:border-stone-400 focus:bg-white;
+}
+
+.btn-primary {
+  @apply inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold text-white transition;
+  background: linear-gradient(135deg, var(--app-primary), var(--app-accent));
+}
+
+.btn-soft {
+  @apply inline-flex items-center justify-center rounded-full border border-stone-200 bg-white px-5 py-3 text-sm font-semibold text-stone-700 transition hover:border-stone-400;
+}
+
+.paper-grid {
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--app-primary) 8%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--app-primary) 8%, transparent) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.envelope-shadow {
+  box-shadow:
+    0 40px 80px color-mix(in srgb, var(--app-primary) 22%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.romantic-gradient {
+  background:
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.85), transparent 30%),
+    radial-gradient(circle at 80% 10%, color-mix(in srgb, var(--app-accent) 20%, transparent), transparent 22%),
+    radial-gradient(circle at 80% 80%, color-mix(in srgb, var(--app-primary) 20%, transparent), transparent 25%),
+    linear-gradient(
+      160deg,
+      color-mix(in srgb, white 94%, var(--app-secondary) 6%),
+      color-mix(in srgb, var(--app-secondary) 78%, white 22%)
+    );
+}
+
+.floating-orb {
+  animation: drift 12s ease-in-out infinite;
+}
+
+.floating-orb.delay-1 {
+  animation-delay: -2s;
+}
+
+.floating-orb.delay-2 {
+  animation-delay: -5s;
+}
+
+.sparkle {
+  animation: sparkle 3.8s ease-in-out infinite;
+}
+
+.music-pill {
+  box-shadow: 0 24px 50px color-mix(in srgb, var(--app-primary) 20%, transparent);
+}
+
+.theme-ink {
+  color: color-mix(in srgb, var(--app-primary) 70%, #111827 30%);
+}
+
+.theme-muted {
+  color: color-mix(in srgb, var(--app-primary) 45%, #6b7280 55%);
+}
+
+.theme-soft-surface {
+  background: color-mix(in srgb, var(--app-surface) 84%, white 16%);
+  border-color: color-mix(in srgb, var(--app-secondary) 46%, white 54%);
+}
+
+.theme-soft-block {
+  background: color-mix(in srgb, var(--app-surface) 74%, white 26%);
+}
+
+.theme-soft-gradient {
+  background:
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, white 90%, var(--app-secondary) 10%),
+      color-mix(in srgb, var(--app-secondary) 70%, white 30%)
+    );
+}
+
+.theme-dark-block {
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--app-primary) 82%, #111827 18%),
+      color-mix(in srgb, var(--app-accent) 78%, #111827 22%)
+    );
+}
+
+.theme-outline {
+  border: 1px solid color-mix(in srgb, var(--app-secondary) 46%, white 54%);
+}
+
+.theme-photo-fallback {
+  background:
+    radial-gradient(circle at top, color-mix(in srgb, var(--app-accent) 16%, transparent), transparent 35%),
+    linear-gradient(
+      145deg,
+      color-mix(in srgb, white 82%, var(--app-secondary) 18%),
+      color-mix(in srgb, var(--app-secondary) 72%, var(--app-background) 28%)
+    );
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(0, -18px, 0) scale(1.04);
+  }
+}
+
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(0.8) rotate(0deg);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: scale(1.12) rotate(18deg);
+  }
+}

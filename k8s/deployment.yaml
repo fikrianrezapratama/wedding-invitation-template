@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lamaran-web
+  namespace: lamaran
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lamaran-web
+  template:
+    metadata:
+      labels:
+        app: lamaran-web
+    spec:
+      initContainers:
+        - name: prisma-db-push
+          image: ghcr.io/your-org/lamaran-invitation:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - mkdir -p /app/data /app/public/uploads && npx prisma db push
+          envFrom:
+            - configMapRef:
+                name: lamaran-config
+            - secretRef:
+                name: lamaran-secret
+          volumeMounts:
+            - name: db-storage
+              mountPath: /app/data
+            - name: uploads-storage
+              mountPath: /app/public/uploads
+      containers:
+        - name: web
+          image: ghcr.io/your-org/lamaran-invitation:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+              name: http
+          envFrom:
+            - configMapRef:
+                name: lamaran-config
+            - secretRef:
+                name: lamaran-secret
+          volumeMounts:
+            - name: db-storage
+              mountPath: /app/data
+            - name: uploads-storage
+              mountPath: /app/public/uploads
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
+        - name: db-storage
+          persistentVolumeClaim:
+            claimName: lamaran-db-pvc
+        - name: uploads-storage
+          persistentVolumeClaim:
+            claimName: lamaran-uploads-pvc
